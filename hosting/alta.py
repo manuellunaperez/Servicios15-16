@@ -29,7 +29,7 @@ uidmax = int(uidmax)+1
 os.system("echo "+uidmax+" > /home/tuhosting.com/numusuarios.txt")
 
 #Buscamos el usuario y nombre de dominio
-busquedausuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'ou=People,dc=tuhosting,dc=com' 'uid="+usuario"' | grep numEntries:")
+busquedausuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'ou=People,dc=tuhosting,dc=com' 'uid="+usuario+"' | grep numEntries:")
 busquedadominio = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'dc=tuhosting,dc=com' 'o="+dominio+"' | grep numEntries:")
 
 if busquedausuario == "# numEntries: 1" and busquedadominio == "#numEntries: 1":
