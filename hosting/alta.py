@@ -60,12 +60,12 @@ else:
 	os.system('ldapadd -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f  usuario.ldif')
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
-	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
+	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp -r /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com")
 #Introducimos la plantilla web en el directorio del usuario:
-	os.system("cp -d  plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
+	os.system("cp -r  plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
 	contenido_plantillaweb= plantilla_web.read()
 	plantilla_web.close()
@@ -88,7 +88,7 @@ else:
 	os.system("a2ensite "+dominio+".conf > /dev/null")
 	
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
-	crearusuarioftp = "INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
+	crearusuarioftp = "use netftp; INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
 	os.system("mysql -uroot -proot -e '"+crearusuarioftp+"'")
 	print("El usuario y contraseña para la administración ftp son:")
 	print("Usuario : "+usuario+"_ftp")
