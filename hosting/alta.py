@@ -14,7 +14,7 @@ dominio = sys.argv[2]
 valores = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 userpass = ""
 userpass = userpass.join([choice(valores) for i in range(8)])
-passldap = commands.getoutput("slappasswd -v -h {md5} -s "+userpass+""
+passldap = commands.getoutput("slappasswd -v -h {md5} -s "+userpass+"")
 #Creamos la contraseña aleatoria para la utilizacion de ftp
 genpassftp = ""
 genpassftp = genpassftp.join([choice(valores) for i in range(8)])
