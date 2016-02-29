@@ -5,6 +5,7 @@ import string
 from random import choice
 import crypt
 import commands
+import MySQLdb
 
 usuario = sys.argv[1]
 dominio = sys.argv[2]
@@ -58,12 +59,15 @@ else:
 	crearusuario.close()
 #Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
 	os.system('ldapadd -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f  usuario.ldif')
+
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp -r /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
+
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com")
+	
 #Introducimos la plantilla web en el directorio del usuario:
 	os.system("cp -r  plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
@@ -73,6 +77,7 @@ else:
 	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombredominio]]', dominio)
 	crearindex.write(contenido_plantillaweb)
 	crearindex.close()
+	
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
 	os.system ("cd /etc/apache2/sites-available/")
@@ -87,12 +92,16 @@ else:
 	crearvhost.close()
 	os.system("a2ensite "+dominio+".conf > /dev/null")
 	
-#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
-	crearusuarioftp = "use netftp; INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
-	os.system("mysql -uroot -proot -e '"+crearusuarioftp+"'")
+#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
+	bd = MySQLdb.connect("localhost","root","root","netftp" )
+	cursor = bd.cursor()
+	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ")
+	bd.close()
 	print("El usuario y contraseña para la administración ftp son:")
 	print("Usuario : "+usuario+"_ftp")
 	print("Contraseña: "+genpassftp+"")
+	
+	
 #Creamos un nuevo usuario y una nueva base de datos para el usuario.
 	acciones = ["create user 'my"+usuario+"'@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"'@'localhost'", "flush privileges"]
 	for i in acciones:
@@ -101,6 +110,8 @@ else:
 	print("El usuario y contraseña para la administración de la base de datos son:")
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
+	
+	
 #Definimos el nombre de dominio para la resolución dns.
 	zonadominio= 'zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };\n'
 	ficheroconf = open("/etc/bind/named.conf.local","a")
