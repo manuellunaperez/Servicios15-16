@@ -25,8 +25,8 @@ genpassdb = genpassdb.join([choice(valores) for i in range(8)])
 
 #Buscamos el uidmax para el alta del nuevo usuario:
 uidmax = commands.getoutput("cat /home/tuhosting.com/numusuarios.txt")
-uidmax = int(uidmax)+1
-os.system("echo "+int(uidmax)+" > /home/tuhosting.com/numusuarios.txt")
+uid = int(uidmax)+1
+os.system("echo "+str(uid)+" > /home/tuhosting.com/numusuarios.txt")
 
 #Buscamos el usuario y nombre de dominio
 busquedausuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'ou=People,dc=tuhosting,dc=com' 'uid="+usuario+"' | grep numEntries:")
