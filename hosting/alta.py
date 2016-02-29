@@ -89,7 +89,7 @@ else:
 	
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
-	os.system("mysql -uroot -proot -e "+crearusuarioftp+"")
+	os.system("mysql -uroot -proot -e '"+crearusuarioftp+"'")
 	print("El usuario y contraseña para la administración ftp son:")
 	print("Usuario : "+usuario+"_ftp")
 	print("Contraseña: "+genpassftp+"")
