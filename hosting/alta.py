@@ -57,7 +57,7 @@ else:
 	crearusuario.write(contenido_plantilla)
 	crearusuario.close()
 #Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
-	os.system('ldapadd -Y EXTERNAL -H ldapi:/// -Q -D "cn=admin,dc=tuhosting,dc=com" < usuario.ldif')
+	os.system('ldapadd -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f  usuario.ldif')
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
