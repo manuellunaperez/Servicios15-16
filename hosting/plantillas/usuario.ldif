@@ -1,0 +1,19 @@
+dn: uid=[[nombreusuario]],ou=People,dc=tuhosting,dc=com
+uid: [[nombreusuario]]
+cn: Usuario miembro de tuhosting.com
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+objectClass: shadowAccount
+userPassword: [[password]]
+loginShell: /sbin/nologin
+uidNumber: [[uidnumber]]
+gidNumber: 2001
+homeDirectory: /home/tuhosting.com/[[nombreusuario]]
+gecos: Usuario de prueba
+host: *
+
+
+dn: o=[[nombredominio]],dc=tuhosting,dc=com
+o: [[nombredominio]]
+objectclass: organization

@@ -24,8 +24,8 @@ genpassdb = ""
 genpassdb = genpassdb.join([choice(valores) for i in range(8)])
 
 #Buscamos el uidmax para el alta del nuevo usuario:
-uidmax = commands.getoutput("cat /home/tuhosintg.com/numusuarios.txt")
-uidmax = uidmax+1
+uidmax = commands.getoutput("cat /home/tuhosting.com/numusuarios.txt")
+uidmax = int(uidmax)+1
 os.system("echo "+uidmax+" > /home/tuhosting.com/numusuarios.txt")
 
 #Buscamos el usuario y nombre de dominio
@@ -59,11 +59,11 @@ else:
 #Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
 	os.system('ldapadd -Y EXTERNAL -H ldapi:/// -Q -D "cn=admin,dc=tuhosting,dc=com" < usuario.ldif')
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
-	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+""
 	print "Creando directorio personal..."
+	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+""
 #Asignamos la cuota de 100 MB al usuario
-	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
 	print "Asignando cuota de espacio"
+	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
 #Introducimos la plantilla web en el directorio del usuario:
 	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/"
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
@@ -74,6 +74,7 @@ else:
 	crearindex.write(contenido_plantillaweb)
 	crearindex.close()
 #Creamos el nuevo virtual host utilizando la plantilla.
+	print "Añadiendo el nuevo dominio al servidor web"
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
@@ -82,7 +83,6 @@ else:
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
 	crearvhost.write(contenido_plantillavhost)
 	crearvhost.close()
-	print "Añadiendo el nuevo dominio"
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "echo 'INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ' > mysql -u admin_hosting -padmin"
 	print("El usuario y contraseña para la administración ftp son:")
@@ -100,6 +100,7 @@ else:
 	zonadominio= ('zone "'+dominio+'"{ type master; file "db.'+dominio+'"; };')
 	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
 #Creamos la zona de resolución directa:
+	print "Creando zona de resolución directa..."
 	plantilla_directa=open('plantillas/directa.conf','r')
 	contenido_plantilladirecta= plantilla_directa.read()
 	plantilla_directa.close()
@@ -107,7 +108,6 @@ else:
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
 	creardirecta.close()
-	print "Creando zona de resolución directa..."
 
 os.system("service apache2 reload")
 os.system("service proftpd reload")
