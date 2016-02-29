@@ -47,16 +47,27 @@ else:
 	plantilla_usuario=open('plantillas/usuario.ldif','r')
 	contenido_plantilla= plantilla_usuario.read()
 	plantilla_usuario.close()
-	crearusuario= open('usuario.ldif','w')
+	crearusuario = open('usuario.ldif','w')
 	contenido_plantilla = contenido_plantilla.replace('[[nombreusuario]]', usuario)
 	contenido_plantilla = contenido_plantilla.replace('[[nombredominio]]', dominio)
 	contenido_plantilla = contenido_plantilla.replace('[[uidnumber]]', uidmax)
 	contenido_plantilla = contenido_plantilla.replace('[[password]]', passldap)
 	crearusuario.write(contenido_plantilla)
 	crearusuario.close()
-	#Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
+#Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
 	os.system('ldapadd -Y EXTERNAL -H ldapi:/// -Q -D "cn=admin,dc=tuhosting,dc=com" < usuario.ldif')
-	#Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
+#Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+""
-	#Asignamos la cuota de 100 MB al usuario
+#Asignamos la cuota de 100 MB al usuario
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
+#Introducimos la plantilla web en el directorio del usuario:
+	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/"
+	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
+	contenido_plantillaweb= plantilla_web.read()
+	plantilla_web.close()
+	crearindex = open("/home/tuhosting.com/"+usuario+"/index.html","w")
+	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombreusuario]]', usuario)
+	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombredominio]]', dominio)
+	crearindex.write(contenido_plantillaweb)
+	crearindex.close()
+	
