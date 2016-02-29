@@ -63,7 +63,7 @@ else:
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
-	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
+	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com")
 #Introducimos la plantilla web en el directorio del usuario:
 	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
