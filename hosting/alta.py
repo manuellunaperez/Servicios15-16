@@ -65,7 +65,7 @@ else:
 	print "Asignando cuota de espacio"
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
 #Introducimos la plantilla web en el directorio del usuario:
-	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/"
+	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
 	contenido_plantillaweb= plantilla_web.read()
 	plantilla_web.close()
@@ -85,6 +85,7 @@ else:
 	crearvhost.close()
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "echo 'INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ' > mysql -u admin_hosting -padmin"
+	os.system(crearusuarioftp)
 	print("El usuario y contraseña para la administración ftp son:")
 	print("Usuario : "+usuario+"_ftp")
 	print("Contraseña: "+genpassftp+"")
