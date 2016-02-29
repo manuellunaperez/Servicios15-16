@@ -78,11 +78,12 @@ else:
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
-	crearvhost = open('/etc/apache2/sites-aviables/'+dominio+'.conf','w')
+	crearvhost = open("/etc/apache2/sites-available/"+dominio+".conf","w")
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
 	crearvhost.write(contenido_plantillavhost)
 	crearvhost.close()
+	os.system("a2ensite /etc/apache2/sites-available/"+dominio+".conf")
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "echo 'INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ' > mysql -u admin_hosting -padmin"
 	os.system(crearusuarioftp)
