@@ -35,7 +35,7 @@ busquedadominio = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 
 if busquedausuario == "# numEntries: 1" and busquedadominio == "#numEntries: 1":
 	print "El usuario y el dominio introducidos ya existen"
 	exit()
-elif busquedausuario != "#numEntries: 1 " and busquedadominio == "# numEntries: 1":
+elif busquedausuario != "# numEntries: 1 " and busquedadominio == "# numEntries: 1":
 	print "El dominio ya está siendo utilizado por otro usuario";
 	exit()
 elif busquedausuario == "# numEntries: 1" and busquedadominio != "#numEntries: 1":
