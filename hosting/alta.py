@@ -80,7 +80,7 @@ else:
 	
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
-	os.system ("cd /etc/apache2/sites-available/")
+	os.system ("cd /etc/apache2/sites-available")
 	os.system("touch "+dominio+".conf")
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
@@ -96,6 +96,7 @@ else:
 	bd = MySQLdb.connect("localhost","root","root","netftp" )
 	cursor = bd.cursor()
 	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ")
+	db.coomit()
 	bd.close()
 	print("El usuario y contraseña para la administración ftp son:")
 	print("Usuario : "+usuario+"_ftp")
