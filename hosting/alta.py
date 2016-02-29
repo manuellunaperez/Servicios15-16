@@ -18,7 +18,10 @@ passldap = commands.getoutput("slappasswd -v -h {md5} -s "+userpass+""
 #Creamos la contraseña aleatoria para la utilizacion de ftp
 genpassftp = ""
 genpassftp = genpassftp.join([choice(valores) for i in range(8)])
-passftp = crypt.crypt(genpassftp, valores)
+
+#Creamos la contraseña aleatoria para la utilizacion de mysql
+genpassdb = ""
+genpassdb = genpassdb.join([choice(valores) for i in range(8)])
 
 #Buscamos el uidmax para el alta del nuevo usuario:
 uidmax = commands.getoutput("cat /home/tuhosintg.com/numusuarios.txt")
@@ -42,8 +45,7 @@ elif busquedausuario == "# numEntries: 1" and busquedadominio != "#numEntries: 1
 else:
 	print "Usuario y nombre de dominio disponibles"
 	print "Creando usuario..."
-	
-	#Utilizamos la plantilla para generar un nuevo archivo ldif con los datos del nuevo usuario y dominio
+#Utilizamos la plantilla para generar un nuevo archivo ldif con los datos del nuevo usuario y dominio
 	plantilla_usuario=open('plantillas/usuario.ldif','r')
 	contenido_plantilla= plantilla_usuario.read()
 	plantilla_usuario.close()
@@ -58,16 +60,39 @@ else:
 	os.system('ldapadd -Y EXTERNAL -H ldapi:/// -Q -D "cn=admin,dc=tuhosting,dc=com" < usuario.ldif')
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+""
+	print "Creando directorio personal..."
 #Asignamos la cuota de 100 MB al usuario
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com"
+	print "Asignando cuota de espacio"
 #Introducimos la plantilla web en el directorio del usuario:
 	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/"
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
 	contenido_plantillaweb= plantilla_web.read()
 	plantilla_web.close()
 	crearindex = open("/home/tuhosting.com/"+usuario+"/index.html","w")
-	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombreusuario]]', usuario)
 	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombredominio]]', dominio)
 	crearindex.write(contenido_plantillaweb)
 	crearindex.close()
-	
+#Creamos el nuevo virtual host utilizando la plantilla.
+	plantilla_vhost=open('plantillas/virtualhost.conf','r')
+	contenido_plantillavhost= plantilla_vhost.read()
+	plantilla_vhost.close()
+	crearvhost = open('/etc/apache2/sites-aviables/'+dominio+'.conf','w')
+	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
+	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
+	crearvhost.write(contenido_plantillavhost)
+	crearvhost.close()
+	print "Añadiendo el nuevo dominio"
+#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
+	crearusuarioftp = "echo 'INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ' > mysql -u admin_hosting -padmin"
+	print("El usuario y contraseña para la administración ftp son:")
+	print("Usuario : "+usuario+"_ftp")
+	print("Contraseña: "+genpassftp+"")
+#Creamos un nuevo usuario y una nueva base de datos para el usuario.
+	acciones = ["create user 'my"+usuario+"''@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"''@'localhost'", "flush privileges"]
+	for i in acciones:
+		os.system('mysql -u admin_hosting -padmin -e "'i'"')
+		
+	print("El usuario y contraseña para la administración de la base de datos son:")
+	print("Usuario : my"+usuario+"")
+	print("Contraseña: "+genpassdb+"")
