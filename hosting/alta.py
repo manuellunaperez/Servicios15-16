@@ -65,7 +65,7 @@ else:
 	print "Asignando cuota de espacio"
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com")
 #Introducimos la plantilla web en el directorio del usuario:
-	os.system("cp plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
+	os.system("cp -d  plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
 	contenido_plantillaweb= plantilla_web.read()
 	plantilla_web.close()
@@ -75,16 +75,15 @@ else:
 	crearindex.close()
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
+	os.system("touch /etc/apache2/sites-available/"+dominio+"")
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
-	os.system("touch /etc/apache2/sites-available/"+dominio+"")
 	crearvhost = open("/etc/apache2/sites-available/"+dominio+"","w")
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
 	crearvhost.write(contenido_plantillavhost)
 	crearvhost.close()
-	os.system("a2ensite /etc/apache2/sites-available/"+dominio+"")
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "echo 'INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ' > mysql -u admin_hosting -padmin"
 	os.system(crearusuarioftp)
@@ -100,7 +99,7 @@ else:
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
 #Definimos el nombre de dominio para la resolución dns.
-	zonadominio= ('zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };')
+	zonadominio= 'zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };\n'
 	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
 #Creamos la zona de resolución directa:
 	print "Creando zona de resolución directa..."
@@ -114,7 +113,8 @@ else:
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
 	creardirecta.close()
-
+	
+os.system("a2ensite /etc/apache2/sites-available/"+dominio+"")
 os.system("service apache2 reload")
 os.system("service proftpd reload")
 os.system("service bind9 reload")
