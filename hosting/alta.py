@@ -91,8 +91,24 @@ else:
 #Creamos un nuevo usuario y una nueva base de datos para el usuario.
 	acciones = ["create user 'my"+usuario+"''@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"''@'localhost'", "flush privileges"]
 	for i in acciones:
-		os.system('mysql -u admin_hosting -padmin -e "'i'"')
+		os.system('mysql -u admin_hosting -padmin -e "'+i+'"')
 		
 	print("El usuario y contraseña para la administración de la base de datos son:")
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
+#Definimos el nombre de dominio para la resolución dns.
+	zonadominio= ('zone "'+dominio+'"{ type master; file "db.'+dominio+'"; };')
+	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
+#Creamos la zona de resolución directa:
+	plantilla_directa=open('plantillas/directa.conf','r')
+	contenido_plantilladirecta= plantilla_directa.read()
+	plantilla_directa.close()
+	creardirecta = open('/var/cache/bind/db.'+dominio+'','w')
+	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
+	creardirecta.write(contenido_plantilladirecta)
+	creardirecta.close()
+	print "Creando zona de resolución directa..."
+
+os.system("service apache2 reload")
+os.system("service proftpd reload")
+os.system("service bind9 reload")
