@@ -85,7 +85,7 @@ else:
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
 	crearvhost.write(contenido_plantillavhost)
 	crearvhost.close()
-	os.system("a2ensite "+dominio+".conf")
+	os.system("a2ensite "+dominio+".conf > /dev/null")
 	
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
