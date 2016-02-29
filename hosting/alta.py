@@ -78,6 +78,7 @@ else:
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
+	os.system("touch /etc/apache2/sites-available/"+dominio+".conf")
 	crearvhost = open("/etc/apache2/sites-available/"+dominio+".conf","w")
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
@@ -91,7 +92,7 @@ else:
 	print("Usuario : "+usuario+"_ftp")
 	print("Contraseña: "+genpassftp+"")
 #Creamos un nuevo usuario y una nueva base de datos para el usuario.
-	acciones = ["create user 'my"+usuario+"''@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"''@'localhost'", "flush privileges"]
+	acciones = ["create user 'my"+usuario+"'@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"'@'localhost'", "flush privileges"]
 	for i in acciones:
 		os.system('mysql -u admin_hosting -padmin -e "'+i+'"')
 		
@@ -99,13 +100,14 @@ else:
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
 #Definimos el nombre de dominio para la resolución dns.
-	zonadominio= ('zone "'+dominio+'"{ type master; file "db.'+dominio+'"; };')
+	zonadominio= ('zone "'+dominio+'" { type master; file "db.'+dominio+'"; };')
 	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
 #Creamos la zona de resolución directa:
 	print "Creando zona de resolución directa..."
 	plantilla_directa=open('plantillas/directa.conf','r')
 	contenido_plantilladirecta= plantilla_directa.read()
 	plantilla_directa.close()
+	os.system("/var/cache/bind/db."+dominio+"")
 	creardirecta = open('/var/cache/bind/db.'+dominio+'','w')
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
