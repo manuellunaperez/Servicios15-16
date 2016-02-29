@@ -100,7 +100,7 @@ else:
 	print("Contraseña: "+genpassdb+"")
 #Definimos el nombre de dominio para la resolución dns.
 	zonadominio= 'zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };\n'
-	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
+	os.system('echo "'+zonadominio+'" >>  /etc/bind/named.conf.local')
 #Creamos la zona de resolución directa:
 	print "Creando zona de resolución directa..."
 	plantilla_directa=open('plantillas/directa.conf','r')
