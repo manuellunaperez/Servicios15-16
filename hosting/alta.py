@@ -100,14 +100,16 @@ else:
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
 #Definimos el nombre de dominio para la resolución dns.
-	zonadominio= ('zone "'+dominio+'" { type master; file "db.'+dominio+'"; };')
+	zonadominio= ('zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };')
 	os.system("echo "+zonadominio+" >>  /etc/bind/named.conf.local")
 #Creamos la zona de resolución directa:
 	print "Creando zona de resolución directa..."
 	plantilla_directa=open('plantillas/directa.conf','r')
 	contenido_plantilladirecta= plantilla_directa.read()
 	plantilla_directa.close()
-	os.system("/var/cache/bind/db."+dominio+"")
+	os.system(" touch /var/cache/bind/db."+dominio+"")
+	os.system("chown bind:bind -R /var/cache/bind/*")
+	os.system("chmod 660 -R /var/cache/bind/*")
 	creardirecta = open('/var/cache/bind/db.'+dominio+'','w')
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
