@@ -76,16 +76,16 @@ else:
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
 	os.system ("cd /etc/apache2/sites-available/")
-	os.system("touch "+dominio+"")
+	os.system("touch "+dominio+".conf")
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
-	crearvhost = open("/etc/apache2/sites-available/"+dominio+"","w")
+	crearvhost = open("/etc/apache2/sites-available/"+dominio+".conf","w")
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
 	crearvhost.write(contenido_plantillavhost)
 	crearvhost.close()
-	os.system("a2ensite "+dominio+"")
+	os.system("a2ensite "+dominio+".conf")
 	
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos.
 	crearusuarioftp = "INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); "
@@ -96,7 +96,7 @@ else:
 #Creamos un nuevo usuario y una nueva base de datos para el usuario.
 	acciones = ["create user 'my"+usuario+"'@'localhost' identified by '"+genpassdb+"'","create database "+usuario+"","grant all privileges on "+usuario+".* to 'my"+usuario+"'@'localhost'", "flush privileges"]
 	for i in acciones:
-		os.system('mysql -u admin_hosting -padmin -e "'+i+'"')
+		os.system('mysql -u root -proot -e "'+i+'"')
 		
 	print("El usuario y contraseña para la administración de la base de datos son:")
 	print("Usuario : my"+usuario+"")
