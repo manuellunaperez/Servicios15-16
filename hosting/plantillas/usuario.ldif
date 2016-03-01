@@ -1,6 +1,6 @@
 dn: uid=[[nombreusuario]],ou=People,dc=tuhosting,dc=com
 uid: [[nombreusuario]]
-cn: Usuario miembro de tuhosting.com
+cn: Usuario propietario de [[nombredominio]]
 objectClass: account
 objectClass: posixAccount
 objectClass: top
@@ -15,5 +15,6 @@ host: *
 
 
 dn: o=[[nombredominio]],dc=tuhosting,dc=com
+description: [[nombreusuario]]
 o: [[nombredominio]]
 objectclass: organization

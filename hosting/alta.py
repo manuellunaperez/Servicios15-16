@@ -62,14 +62,14 @@ else:
 
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
-	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp -r /etc/skel/.* /home/tuhosting.com/"+usuario+"/ ; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
+	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ > /dev/null; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
 
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
 	os.system("quotatool -u "+usuario+" -bq 90M -l '100 Mb' /home/tuhosting.com")
 	
 #Introducimos la plantilla web en el directorio del usuario:
-	os.system("cp -r  plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
+	os.system("cp -dPr plantillas/cyanspark/* /home/tuhosting.com/"+usuario+"/")
 	plantilla_web=open("/home/tuhosting.com/"+usuario+"/index.html","r")
 	contenido_plantillaweb= plantilla_web.read()
 	plantilla_web.close()
@@ -81,10 +81,10 @@ else:
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
 	os.system ("cd /etc/apache2/sites-available")
-	os.system("touch "+dominio+".conf")
 	plantilla_vhost=open('plantillas/virtualhost.conf','r')
 	contenido_plantillavhost= plantilla_vhost.read()
 	plantilla_vhost.close()
+	os.system("touch "+dominio+".conf")
 	crearvhost = open("/etc/apache2/sites-available/"+dominio+".conf","w")
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombreusuario]]', usuario)
 	contenido_plantillavhost = contenido_plantillavhost.replace('[[nombredominio]]', dominio)
@@ -95,7 +95,7 @@ else:
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
 	bd = MySQLdb.connect("localhost","root","root","netftp" )
 	cursor = bd.cursor()
-	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, 'home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ")
+	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, '/home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ")
 	bd.commit()
 	bd.close()
 	print("El usuario y contraseña para la administración ftp son:")
