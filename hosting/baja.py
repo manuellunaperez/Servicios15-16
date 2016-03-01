@@ -13,7 +13,7 @@ dominio = sys.argv[1]
 #Buscamos el usuario y nombre de dominio
 busquedadominio = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'dc=tuhosting,dc=com' 'o="+dominio+"' | grep numEntries:")
 
-if  busquedadominio != "#numEntries: 1":
+if  busquedadominio != "# numEntries: 1":
 	print "El dominio no se encuentra"
 	exit()
 else:
