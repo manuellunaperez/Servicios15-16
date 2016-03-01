@@ -21,7 +21,7 @@ else:
 	#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
 		bd = MySQLdb.connect("localhost","root","root","netftp" )
 		cursor = bd.cursor()
-		cursor.execute('UPDATE ftpuser SET passwd=ENCRYPT("'+password+'" WHERE  userid="'+usuario+'_ftp";')
+		cursor.execute('UPDATE ftpuser SET passwd=ENCRYPT("'+password+'") WHERE  userid="'+usuario+'_ftp";')
 		bd.commit()
 		bd.close()
 		print("Contrseña para usuario ftp cambiada")
@@ -33,7 +33,7 @@ else:
 	elif opcion == "-sql":
 		bd = MySQLdb.connect("localhost","root","root","mysql" )
 		cursor = bd.cursor()
-		cursor.execute('UPDATE user SET password=PASSWORD("'+password+'" WHERE  User="my'+usuario+'";')
+		cursor.execute('UPDATE user SET password=PASSWORD("'+password+'") WHERE  User="my'+usuario+'";')
 		bd.commit()
 		bd.close()
 		print("Contraseña para usuario mysql cambiada")
