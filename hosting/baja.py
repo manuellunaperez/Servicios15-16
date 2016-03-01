@@ -52,7 +52,7 @@ else:
 	numdominio = command.getoutput('cat /etc/bind/named.conf.local |grep -n  zone "'+dominio+'" | sed -e :zone "'+dominio+'" { ')
 	lineas = int(numdominio)+3
 	print "Borrando zona de resolución directa..."
-	os.syemtem("sed -i '"+int(numdominio)+","+lineas+"d' /etc/bind/named.conf.local")
+	os.system("sed -i '"+int(numdominio)+","+lineas+"d' /etc/bind/named.conf.local")
 	os.system('rm /var/cache/bind/db.'+dominio+'')
 
 os.system("service apache2 reload")
