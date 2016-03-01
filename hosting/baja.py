@@ -22,7 +22,7 @@ else:
 #Borramos usuario y dominio de ldap 	
 	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "o='+dominio+',dc=tuhosting,dc=com"')
 	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "uid='+usuario+',ou=People,dc=tuhosting,dc=com"')
-
+	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "cn='+usuario+',ou=Group,dc=tuhosting,dc=com"')
 #Borramos el directorio personal del usuario
 	print "Borrando directorio personal..."
 	os.system("rm -fr /home/tuhosting.com/"+usuario+"")

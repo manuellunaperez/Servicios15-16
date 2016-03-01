@@ -1,3 +1,9 @@
+dn: cn=[[nombreusuario]],ou=Group,dc=tuhosting,dc=com
+objectClass: posixGroup
+objectClass: top
+cn: [[nombreusuario]]
+gidNumber: [[uidnumber]]
+
 dn: uid=[[nombreusuario]],ou=People,dc=tuhosting,dc=com
 uid: [[nombreusuario]]
 cn: Usuario propietario de [[nombredominio]]
@@ -8,7 +14,7 @@ objectClass: shadowAccount
 userPassword: [[password]]
 loginShell: /sbin/nologin
 uidNumber: [[uidnumber]]
-gidNumber: 2001
+gidNumber: [[uidnumber]]
 homeDirectory: /home/tuhosting.com/[[nombreusuario]]
 gecos: Usuario de prueba
 host: *
@@ -18,3 +24,5 @@ dn: o=[[nombredominio]],dc=tuhosting,dc=com
 description: [[nombreusuario]]
 o: [[nombredominio]]
 objectclass: organization
+
+

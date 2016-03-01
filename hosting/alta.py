@@ -62,7 +62,7 @@ else:
 
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
-	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ > /dev/null; chown -R "+uidmax+":2001 /home/tuhosting.com/"+usuario+"")
+	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ > /dev/null")
 
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
@@ -141,7 +141,7 @@ else:
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
 	creardirecta.close()
-
+os.system("chown -R "+uidmax+":"+uidmax+" /home/tuhosting.com/"+usuario+"")
 os.system("service apache2 reload")
 os.system("service proftpd reload")
 os.system("service bind9 reload")
