@@ -17,7 +17,7 @@ if busquedausuario != "# numEntries: 1 ":
 	print "El usuario buscado no ha sido encontrado";
 	exit()
 else:	
-	if opcion == "-ftp" 
+	if opcion == "-ftp":
 	#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
 		bd = MySQLdb.connect("localhost","root","root","netftp" )
 		cursor = bd.cursor()
