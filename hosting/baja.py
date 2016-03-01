@@ -54,7 +54,7 @@ else:
 	print("El usuario para la administración de la base de datos ha sido borrado")
 	
 #Definimos el nombre de dominio para la resolución dns.
-	numdominio = command.getoutput('cat /etc/bind/named.conf.local |grep -n "^zone.*.'+dominio+'"')
+	numdominio = commands.getoutput('cat /etc/bind/named.conf.local |grep -n "^zone.*.'+dominio+'"')
 	linea = numdominio.split(":")
 	lineas = int(linea[0])+3
 	print "Borrando zona de resolución directa..."
