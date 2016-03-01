@@ -30,7 +30,7 @@ else:
 
 #Borramos el nuevo virtual host.
 	print "Borrando virtual host"
-	os.system("cd /etc/apache2/sites-enables/")
+	os.system("cd /etc/apache2/sites-enabled/")
 	os.system("a2dissite "+dominio+".conf > /dev/null")
 	os.system("rm /etc/apache2/sites-available/"+dominio+".conf")
 	
@@ -42,6 +42,10 @@ else:
 	bd.close()
 	print("Usuario ftp borrado")	
 	
+	print "Borrando virtual host phpmyadmin"
+	os.system("cd /etc/apache2/sites-enabled/")
+	os.system("a2dissite "+dominio+"db.conf > /dev/null")
+	os.system("rm /etc/apache2/sites-available/"+dominio+"db.conf")
 #Creamos un nuevo usuario y una nueva base de datos para el usuario.
 	acciones = ["drop user 'my"+usuario+"'@'localhost'","drop database "+usuario+""]
 	for i in acciones:
@@ -50,10 +54,11 @@ else:
 	print("El usuario para la administración de la base de datos ha sido borrado")
 	
 #Definimos el nombre de dominio para la resolución dns.
-	numdominio = command.getoutput('cat /etc/bind/named.conf.local |grep -n  zone "'+dominio+'" | sed -e :zone "'+dominio+'" { ')
-	lineas = int(numdominio)+3
+	numdominio = command.getoutput('cat /etc/bind/named.conf.local |grep -n "^zone.*.'+dominio+'"')
+	linea = numdominio.split(":")
+	lineas = int(linea[0])+3
 	print "Borrando zona de resolución directa..."
-	os.system("sed -i '"+int(numdominio)+","+lineas+"d' /etc/bind/named.conf.local")
+	os.system("sed -i '"+int(linea[0])+","+lineas+"d' /etc/bind/named.conf.local")
 	os.system('rm /var/cache/bind/db.'+dominio+'')
 
 os.system("service apache2 reload")

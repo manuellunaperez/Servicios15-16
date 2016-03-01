@@ -111,7 +111,19 @@ else:
 	print("El usuario y contraseña para la administración de la base de datos son:")
 	print("Usuario : my"+usuario+"")
 	print("Contraseña: "+genpassdb+"")
-	
+
+#Creamos el nuevo virtual host de phpmyadmin utilizando la plantilla.
+	print "Añadiendo el nuevo dominio al servidor web"
+	os.system ("cd /etc/apache2/sites-available")
+	plantilla_vhostdb=open('plantillas/virtualhostdb.conf','r')
+	contenido_plantillavhostdb= plantilla_vhostdb.read()
+	plantilla_vhostdb.close()
+	os.system("touch "+dominio+"db.conf")
+	crearvhostdb = open("/etc/apache2/sites-available/"+dominio+"db.conf","w")
+	contenido_plantillavhostdb = contenido_plantillavhostdb.replace('[[nombredominio]]', dominio)
+	crearvhostdb.write(contenido_plantillavhostdb)
+	crearvhostdb.close()
+	os.system("a2ensite "+dominio+"db.conf > /dev/null")	
 	
 #Definimos el nombre de dominio para la resolución dns.
 	zonadominio= 'zone "'+dominio+'" {\n	type master;\n	file "db.'+dominio+'";\n };\n'
