@@ -13,7 +13,7 @@ password = sys.argv[3]
 
 busquedausuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'ou=People,dc=tuhosting,dc=com' 'uid="+usuario+"' | grep numEntries:")
 
-if busquedausuario != "# numEntries: 1 ":
+if busquedausuario != "# numEntries: 1":
 	print "El usuario buscado no ha sido encontrado";
 	exit()
 else:	
