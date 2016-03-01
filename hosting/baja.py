@@ -20,8 +20,8 @@ else:
 	print "Borrando dominio"
 	usuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'dc=tuhosting,dc=com' 'o="+dominio+"' | grep description: | sed -e 's,description: ,,'")
 #Borramos usuario y dominio de ldap 	
-	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "o='+dominio+'",dc=tuhosting,dc=com" ;')
-	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "uid='+usuario+'",ou=People,dc=tuhosting,dc=com"')
+	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "o='+dominio+',dc=tuhosting,dc=com"')
+	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "uid='+usuario+',ou=People,dc=tuhosting,dc=com"')
 
 #Borramos el directorio personal del usuario
 	print "Borrando directorio personal..."
@@ -30,7 +30,8 @@ else:
 
 #Borramos el nuevo virtual host.
 	print "Borrando virtual host"
-	os.system("a2dissite /etc/apache2/sites-enabled/"+dominio+".conf > /dev/null")
+	os.system("cd /etc/apache2/sites-enables/")
+	os.system("a2dissite "+dominio+".conf > /dev/null")
 	os.system("rm /etc/apache2/sites-available/"+dominio+".conf")
 	
 #Borramos elusuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
