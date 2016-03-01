@@ -95,7 +95,7 @@ else:
 #Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
 	bd = MySQLdb.connect("localhost","root","root","netftp" )
 	cursor = bd.cursor()
-	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, '/home/tuhosting.com/"+usuario+"/', '/sbin/nologin', 0, '', ''); ")
+	cursor.execute("INSERT INTO `ftpuser` (`id`, `userid`, `passwd`, `uid`, `gid`, `homedir`, `shell`, `count`, `accessed`, `modified`) VALUES ('', '"+usuario+"_ftp', ENCRYPT('"+genpassftp+"'), 2005, 2005, '/home/tuhosting.com/"+usuario+"', '/sbin/nologin', 0, '', ''); ")
 	bd.commit()
 	bd.close()
 	print("El usuario y contraseña para la administración ftp son:")
