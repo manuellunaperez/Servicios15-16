@@ -58,7 +58,7 @@ else:
 	linea = numdominio.split(":")
 	lineas = int(linea[0])+3
 	print "Borrando zona de resolución directa..."
-	os.system("sed -i '"+int(linea[0])+","+lineas+"d' /etc/bind/named.conf.local")
+	os.system("sed -i '"+str(linea[0])+","+str(lineas)+"d' /etc/bind/named.conf.local")
 	os.system('rm /var/cache/bind/db.'+dominio+'')
 
 os.system("service apache2 reload")
