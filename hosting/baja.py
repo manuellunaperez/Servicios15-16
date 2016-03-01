@@ -20,8 +20,8 @@ else:
 	print "Borrando dominio"
 	usuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'dc=tuhosting,dc=com' 'o="+dominio+"' | grep description: | sed -e 's,description: ,,'")
 #Borramos usuario y dominio de ldap 	
-	ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "o="+dominio+",dc=tuhosting,dc=com" ;
-	ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "uid="+usuario+",ou=People,dc=tuhosting,dc=com"
+	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "o='+dominio+'",dc=tuhosting,dc=com" ;')
+	os.system('ldapdelete -x -D "cn=admin,dc=tuhosting,dc=com" -wroot "uid='+usuario+'",ou=People,dc=tuhosting,dc=com"')
 
 #Borramos el directorio personal del usuario
 	print "Borrando directorio personal..."
