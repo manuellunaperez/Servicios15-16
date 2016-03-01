@@ -33,7 +33,8 @@ else:
 	elif opcion == "-sql":
 		bd = MySQLdb.connect("localhost","root","root","mysql" )
 		cursor = bd.cursor()
-		cursor.execute('UPDATE user SET password=ENCRYPT("'+password+'") WHERE  User="my'+usuario+'";')
+		cursor.execute('UPDATE user SET password=PASSWORD("'+password+'") WHERE  user="my'+usuario+'";')
+		cursor.execute('flush privileges;')
 		bd.commit()
 		bd.close()
 		print("Contraseña para usuario mysql cambiada")
