@@ -109,7 +109,7 @@ else:
 #Creamos el nuevo virtual host de phpmyadmin utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"
 	os.system ("cd /etc/apache2/sites-available")
-	plantilla_vhostdb=open('plantillas/virtualhostdb.conf','r')
+	plantilla_vhostdb = open('plantillas/virtualhostdb.conf','r')
 	contenido_plantillavhostdb= plantilla_vhostdb.read()
 	plantilla_vhostdb.close()
 	os.system("touch "+dominio+"db.conf")

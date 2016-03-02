@@ -20,9 +20,9 @@ if busquedausuario != "# numEntries: 1":
 else:	
 	if opcion == "-ftp":
 	#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
-	plantilla_pass=open('plantillas/pass.ldif','r')
-	contenido_plantilla= plantilla_pass.read()
-	plantilla_pass.close()
+	plantillapass = open('plantillas/pass.ldif','r')
+	contenido_plantilla= plantillapass.read()
+	plantillapass.close()
 	cambiarpass = open('pass.ldif','w')
 	contenido_plantilla = contenido_plantilla.replace('[[nombreusuario]]', usuario)
 	contenido_plantilla = contenido_plantilla.replace('[[password]]', passldap)
