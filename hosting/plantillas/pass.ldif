@@ -1,0 +1,4 @@
+dn: cn=[[nombreusuario]],ou=Group,dc=tuhosting,dc=com
+changetype: modify
+replace: userPassword
+userPassword: [[password]]
