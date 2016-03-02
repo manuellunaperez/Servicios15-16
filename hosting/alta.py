@@ -59,7 +59,7 @@ else:
 	crearusuario.close()
 #Añadimos a ldap el fichero ldif con los datos del nuevo usuario y dominio:
 	os.system('ldapadd -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f  usuario.ldif')
-
+	os.system('rm usuario.ldif')
 #Creamos el directorio personal del usuario y le asignamos los permisos correspondientes
 	print "Creando directorio personal..."
 	os.system("mkdir /home/tuhosting.com/"+usuario+" ; cp /etc/skel/.* /home/tuhosting.com/"+usuario+"/ > /dev/null")
@@ -73,6 +73,7 @@ else:
 	contenido_plantillaweb = contenido_plantillaweb.replace('[[nombredominio]]', dominio)
 	crearindex.write(contenido_plantillaweb)
 	crearindex.close()
+
 	
 #Creamos el nuevo virtual host utilizando la plantilla.
 	print "Añadiendo el nuevo dominio al servidor web"

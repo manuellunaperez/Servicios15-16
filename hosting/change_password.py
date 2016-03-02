@@ -10,6 +10,7 @@ import MySQLdb
 usuario = sys.argv[1]
 opcion = sys.argv[2]
 password = sys.argv[3]	
+passldap = commands.getoutput("slappasswd -v -h {md5} -s "+password+"")
 
 busquedausuario = commands.getoutput("ldapsearch -Y EXTERNAL -H ldapi:/// -Q -D 'cn=admin,dc=tuhosting,dc=com' -b 'ou=People,dc=tuhosting,dc=com' 'uid="+usuario+"' | grep numEntries:")
 
@@ -19,15 +20,18 @@ if busquedausuario != "# numEntries: 1":
 else:	
 	if opcion == "-ftp":
 	#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
-		bd = MySQLdb.connect("localhost","root","root","netftp" )
-		cursor = bd.cursor()
-		cursor.execute('UPDATE ftpuser SET passwd=ENCRYPT("'+password+'") WHERE  userid="'+usuario+'_ftp";')
-		bd.commit()
-		bd.close()
-		print("Contrseña para usuario ftp cambiada")
-
+	plantilla_pass=open('plantillas/pass.ldif','r')
+	contenido_plantilla= plantilla_pass.read()
+	plantilla_pass.close()
+	cambiarpass = open('pass.ldif','w')
+	contenido_plantilla = contenido_plantilla.replace('[[nombreusuario]]', usuario)
+	contenido_plantilla = contenido_plantilla.replace('[[password]]', passldap)
+	cambiarpass.write(contenido_plantilla)
+	cambiarpass.close()
 	
-	
+	os.system('ldapmodify -H ldap:// -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f pass.ldif')
+	os.system('rm pass.ldif')
+	print("Contraseña para usuario ftp cambiada")
 	#Creamos un nuevo usuario y una nueva base de datos para el usuario.
 
 	elif opcion == "-sql":
