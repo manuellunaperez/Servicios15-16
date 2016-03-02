@@ -1,4 +1,4 @@
-dn: cn=[[nombreusuario]],ou=People,dc=tuhosting,dc=com
+dn: uid=[[nombreusuario]],ou=People,dc=tuhosting,dc=com
 changetype: modify
 replace: userPassword
 userPassword: [[password]]
