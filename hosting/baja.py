@@ -34,13 +34,6 @@ else:
 	os.system("a2dissite "+dominio+".conf > /dev/null")
 	os.system("rm /etc/apache2/sites-available/"+dominio+".conf")
 	
-#Borramos elusuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
-	bd = MySQLdb.connect("localhost","root","root","netftp" )
-	cursor = bd.cursor()
-	cursor.execute("DELETE FROM ftpuser WHERE userid='"+usuario+"_ftp';")
-	bd.commit()
-	bd.close()
-	print("Usuario ftp borrado")	
 	
 	print "Borrando virtual host phpmyadmin"
 	os.system("cd /etc/apache2/sites-enabled/")
