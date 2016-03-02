@@ -129,12 +129,12 @@ else:
 	contenido_plantilladirecta= plantilla_directa.read()
 	plantilla_directa.close()
 	os.system("touch /var/cache/bind/db."+dominio+"")
-	os.system("chown bind:bind -R /var/cache/bind/*")
-	os.system("chmod 660 -R /var/cache/bind/*")
 	creardirecta = open('/var/cache/bind/db.'+dominio+'','w')
 	contenido_plantilladirecta = contenido_plantilladirecta.replace('[[nombredominio]]', dominio)
 	creardirecta.write(contenido_plantilladirecta)
 	creardirecta.close()
+	os.system("chown bind:bind -R /var/cache/bind/*")
+	os.system("chmod 660 -R /var/cache/bind/*")
 	
 #Asignamos la cuota de 100 MB al usuario
 	print "Asignando cuota de espacio"
