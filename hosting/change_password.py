@@ -20,18 +20,17 @@ if busquedausuario != "# numEntries: 1":
 else:	
 	if opcion == "-ftp":
 	#Creamos el nuevo usuario virtual para la gestión del ftp, lo almacenamos en uan base de datos. 
-	plantillapass = open('plantillas/pass.ldif','r')
-	contenido_plantilla= plantillapass.read()
-	plantillapass.close()
-	cambiarpass = open('pass.ldif','w')
-	contenido_plantilla = contenido_plantilla.replace('[[nombreusuario]]', usuario)
-	contenido_plantilla = contenido_plantilla.replace('[[password]]', passldap)
-	cambiarpass.write(contenido_plantilla)
-	cambiarpass.close()
-	
-	os.system('ldapmodify -H ldap:// -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f pass.ldif')
-	os.system('rm pass.ldif')
-	print("Contraseña para usuario ftp cambiada")
+		plantillapassword = open('plantillas/pass.ldif','r')
+		contenido_plantilla= plantillapassword.read()
+		plantillapassword.close()
+		cambiarpassword = open('pass.ldif','w')
+		contenido_plantilla = contenido_plantilla.replace('[[nombreusuario]]', usuario)
+		contenido_plantilla = contenido_plantilla.replace('[[password]]', passldap)
+		cambiarpassword.write(contenido_plantilla)
+		cambiarpassword.close()
+		os.system('ldapmodify -H ldap:// -x -D "cn=admin,dc=tuhosting,dc=com" -wroot -f pass.ldif')
+		os.system('rm pass.ldif')
+		print("Contraseña para usuario ftp cambiada")
 	#Creamos un nuevo usuario y una nueva base de datos para el usuario.
 
 	elif opcion == "-sql":
